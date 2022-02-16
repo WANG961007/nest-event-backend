@@ -1,6 +1,6 @@
 import {
     Body, ClassSerializerInterceptor,
-    Controller,
+    Controller, DefaultValuePipe,
     Get, NotFoundException,
     Param,
     ParseIntPipe,
@@ -9,12 +9,12 @@ import {
     UseGuards,
     UseInterceptors
 } from "@nestjs/common";
-import {EventsService} from "../events.service";
-import {AttendeesService} from "../attendees.service";
-import {CreateAttendeeDto} from "./create-attendee.dto";
-import {CurrentUser} from "../../auth/current-user";
-import {User} from "../../auth/user.entity";
-import {AuthGuardJwt} from "../../auth/auth-guard.jwt";
+import {EventsService} from "./events.service";
+import {AttendeesService} from "./attendees.service";
+import {CreateAttendeeDto} from "./input/create-attendee.dto";
+import {CurrentUser} from "../auth/current-user";
+import {User} from "../auth/user.entity";
+import {AuthGuardJwt} from "../auth/auth-guard.jwt";
 
 @Controller('events-attendance')
 @SerializeOptions({strategy: 'excludeAll'})
@@ -30,16 +30,16 @@ export class CurrentUserEventAttendanceController {
     @UseInterceptors(ClassSerializerInterceptor)
     async findAll(
         @CurrentUser() user: User,
-        @Query('page') page = 1
+        @Query('page',new DefaultValuePipe(1),ParseIntPipe) page = 1
     ) {
         return await this.eventsService
             .getEventsAttendedByUserIdPaginated(
-                user.id,{limit: 6, currentPage: page}
+                user.id, {limit: 6, currentPage: page}
             )
 
     }
 
-    @Get(":/eventId")
+    @Get(":eventId")
     @UseGuards(AuthGuardJwt)
     @UseInterceptors(ClassSerializerInterceptor)
     async findOne(

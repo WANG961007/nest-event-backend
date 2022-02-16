@@ -103,7 +103,7 @@ export class EventsController {
         // }
         // return event;
         // After Query Builder
-        const event = await this.eventsService.getEvent((id));
+        const event = await this.eventsService.getEventWithAttendeeCount((id));
         if (!event) {
             throw new NotFoundException();
         }
@@ -121,17 +121,17 @@ export class EventsController {
     @Patch(':id')
     @UseGuards(AuthGuardJwt)
     @UseInterceptors(ClassSerializerInterceptor)
-    async update(@Param('id') id,
+    async update(@Param('id', ParseIntPipe) id,
                  @Body() input: UpdateEventDto,
-                 @CurrentUser() user:User) {
-        const event = await this.eventsService.getEvent(id);
+                 @CurrentUser() user: User) {
+        const event = await this.eventsService.findOne(id);
 
         if (!event) {
             throw new NotFoundException();
         }
 
         if (event.organizerId !== user.id) {
-            throw new ForbiddenException(null,`You are not authorized to change this event`)
+            throw new ForbiddenException(null, `You are not authorized to change this event`)
         }
 
         return await this.eventsService.updateEvent(event, input);
@@ -142,15 +142,15 @@ export class EventsController {
     @HttpCode(204)
     @UseGuards(AuthGuardJwt)
     @UseInterceptors(ClassSerializerInterceptor)
-    async remove(@Param('id') id,
-                 @CurrentUser() user:User) {
-        const event = await this.eventsService.getEvent(id);
+    async remove(@Param('id', ParseIntPipe) id,
+                 @CurrentUser() user: User) {
+        const event = await this.eventsService.findOne(id);
         if (!event) {
             throw new NotFoundException();
         }
 
         if (event.organizerId !== user.id) {
-            throw new ForbiddenException(null,`You are not authorized to delete this event`)
+            throw new ForbiddenException(null, `You are not authorized to delete this event`)
         }
 
         // const event = await this.repository.findOne(id);

@@ -15,12 +15,14 @@ export class Attendee {
     @Expose()
     id: number;
 
-    @Column()
-    @Expose()
-    name: string;
+    // @Column()
+    // @Expose()
+    // name: string;
 
     @ManyToOne(() => Event, (event) => event.attendees,{
-        nullable: true
+        nullable: true,
+        // onDelete: "CASCADE"
+        // onUpdate: "CASCADE"
     })
     @JoinColumn()
     event: Event;

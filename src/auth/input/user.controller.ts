@@ -3,7 +3,6 @@ import {AuthService} from "../auth.service";
 import {CreateUserDto} from "./create.user.dto";
 import {User} from "../user.entity";
 import {InjectRepository} from "@nestjs/typeorm";
-import {Attendee} from "../../events/attendee.entity";
 import {Repository} from "typeorm";
 
 @Controller('users')
