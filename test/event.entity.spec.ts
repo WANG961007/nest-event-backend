@@ -1,4 +1,4 @@
-import {Event} from "./event.entity";
+import {Event} from "../src/events/event.entity";
 
 test('Event should be initialized through constructor', ()=>{
     const event = new Event({

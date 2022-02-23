@@ -1,9 +1,8 @@
-import {EventsService} from "./events.service";
+import {EventsService} from "../src/events/events.service";
 import {Repository} from "typeorm";
-import {Event} from "./event.entity";
+import {Event} from "../src/events/event.entity";
 import {Test} from "@nestjs/testing";
 import {getRepositoryToken} from "@nestjs/typeorm";
-import exp from "constants";
 
 
 describe('EventsService', () => {

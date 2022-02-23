@@ -6,29 +6,36 @@ import {User} from "./user.entity";
 import {InjectRepository} from "@nestjs/typeorm";
 import * as bcrypt from "bcrypt";
 
+/**
+ * PassportStrategy has a lot of strategy(exclude local & Jwt strategy)
+ * super() means that will call the parent constructor(PassportStrategy)
+ */
 @Injectable()
-export class LocalStrategy extends PassportStrategy(Strategy){//PassportStrategy已经给我们提供了好多方法了
+export class LocalStrategy extends PassportStrategy(Strategy) {
     private readonly logger = new Logger(LocalStrategy.name);
 
     constructor(
         @InjectRepository(User)
         private readonly userRepository: Repository<User>
     ) {
-        super();// call the super method that will call the parent constructor(PassportStrategy)
+        super();
     }
 
-    public async validate(username: string, password: string): Promise<any> {// return value shoule be any
+    public async validate(username: string, password: string): Promise<any> {
+
         const user = await this.userRepository.findOne({
-            where: {username}// so this should fetch the user by username
-        });
+            where: {username}
+        })
 
         if (!user) {
-            this.logger.debug(`User ${username} not found!`);
+            this.logger.debug(`User ${username} not found`);
             throw new UnauthorizedException();
         }
 
-        // focus!! we CANNOT store the password in the database in a plain text.
-        // So the next step is to compare the provided passwords with the password stored inside the database.
+        /**
+         * focus!! we CANNOT store the password in the database in a plain text.
+         * next => compare the provided passwords with the password stored inside the database
+         */
         if (!(await bcrypt.compare(password, user.password))) {
             this.logger.debug(`Invalid credentials for user ${username}`);
             throw new UnauthorizedException();
@@ -36,4 +43,5 @@ export class LocalStrategy extends PassportStrategy(Strategy){//PassportStrategy
 
         return user;
     }
+
 }

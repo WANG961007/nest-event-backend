@@ -2,7 +2,7 @@ import {Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn}
 import {Profile} from "./profile.entity";
 import {Event} from "../events/event.entity";
 import {Expose} from "class-transformer";
-import {Attendee} from "../events/attendee.entity";
+import {Attendee} from "../events/attendee/attendee.entity";
 
 @Entity()
 export class User {
@@ -29,15 +29,15 @@ export class User {
     @Expose()
     lastName: string;
 
-    @OneToOne(() => Profile,{cascade: true})//Target return function
+    @OneToOne(() => Profile,{cascade: true})
     @JoinColumn()//Means that on the user table, there will be a profile ID column linking to this relationship
     @Expose()
     profile: Profile;
 
-    @OneToMany(() => Event, (event) => event.organizer)
+    @OneToMany(() => Event, (event) => event.organizer,{cascade: true})
     @Expose()
     organized: Event;
 
-    @OneToMany(() => Attendee, (attendee) => attendee.user)
+    @OneToMany(() => Attendee, (attendee) => attendee.user,{cascade: true})
     attended: Attendee[];
 }

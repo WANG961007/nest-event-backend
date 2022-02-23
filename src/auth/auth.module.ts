@@ -8,12 +8,15 @@ import {AuthService} from "./auth.service";
 import {JwtStrategy} from "./jwt.strategy";
 import {UserController} from "./input/user.controller";
 
+/**
+ * secret: something that took a generation will base on
+ */
 @Module({
     imports: [
         TypeOrmModule.forFeature([User]),
         JwtModule.registerAsync({
             useFactory: () => ({
-                secret: process.env.AUTH_SECRET,// secret is something that took a generation will base on
+                secret: process.env.AUTH_SECRET,
                 signOptions: {
                     expiresIn: '60m'
                 }

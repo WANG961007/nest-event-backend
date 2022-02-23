@@ -14,22 +14,26 @@ export class UserController {
     ) {
     }
 
+    /**
+     * existingUser to verify that whether there already have the username or email
+     * @param createUserDto
+     */
     @Post()
     async create(@Body() createUserDto: CreateUserDto) {
         const user = new User();
-        if (createUserDto.password !== createUserDto.retypedPassword) {
-            throw new BadRequestException(['Passwords are not identical']);
-        }
-
-        // we want to fetch the username and email to find out whether there already have the same username and email
         const existingUser = await this.userRepository.findOne({
             where: [
                 {username: createUserDto.username},
                 {email: createUserDto.email}
             ]
         })
+
+        if (createUserDto.password !== createUserDto.retypedPassword) {
+            throw new BadRequestException(['Password are not identical']);
+        }
+
         if (existingUser) {
-            throw new BadRequestException(['username or email is already taken']);
+            throw new BadRequestException(['username or email is already taken'])
         }
 
         user.username = createUserDto.username;

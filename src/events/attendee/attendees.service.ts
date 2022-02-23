@@ -2,7 +2,7 @@ import {InjectRepository} from "@nestjs/typeorm";
 import {Attendee} from "./attendee.entity";
 import {Repository} from "typeorm";
 import {Injectable} from "@nestjs/common";
-import {CreateAttendeeDto} from "./input/create-attendee.dto";
+import {CreateAttendeeDto} from "../input/create-attendee.dto";
 
 @Injectable()
 export class AttendeesService {
@@ -12,35 +12,45 @@ export class AttendeesService {
     ) {
     }
 
-    public async findByEventID(eventId: number): Promise<Attendee[]> {
+    /**
+     * @param eventId
+     */
+    public async findByEventId(eventId: number): Promise<Attendee[]> {
         return await this.attendeeRepository.find({
-            event: {id: eventId}
-        });
+            event:{id: eventId}
+            });
     }
 
-    public async findOneByEventIdAndUserId(
-        eventId: number, userId: number
+    /**
+     * @param eventId
+     * @param userId
+     */
+    public async findOneAttendeeByEventIdAndUserId(eventId: number, userId: number
     ): Promise<Attendee | undefined> {
         return await this.attendeeRepository.findOne(
             {
                 event: {id: eventId},
                 user: {id: userId}
             }
-        )
+        );
     }
 
-    // this method will let you enroll at least an event
+    /**
+     * this method will let attendee enroll(create or update) at least an event
+     * @param input
+     * @param eventId
+     * @param userId
+     * @return
+     */
     public async createOrUpdate(
         input: CreateAttendeeDto, eventId: number, userId: number
     ): Promise<Attendee> {
-        const attendee = await this.findOneByEventIdAndUserId(eventId, userId)
+        const attendee = await this.findOneAttendeeByEventIdAndUserId(eventId, userId)
             ?? new Attendee();
-        // means that you haven't decide yet whether you want to attend an event or not
-        // then here will pass the data from the input to the attendee
 
+        attendee.answer = input.answer;
         attendee.eventId = eventId;
         attendee.userId = userId;
-        attendee.answer = input.answer;
 
         return await this.attendeeRepository.save(attendee);
     }

@@ -1,5 +1,5 @@
 import {Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm";
-import {Attendee} from "./attendee.entity";
+import {Attendee} from "./attendee/attendee.entity";
 import {User} from "../auth/user.entity";
 import {Expose} from "class-transformer";
 import {PaginationResult} from "../pagination/paginator";
@@ -44,7 +44,7 @@ export class Event {
     organizerId: number;
 
     @Expose()
-    attendeeCount?: number;//?means it's optional
+    attendeeCount?: number;
     @Expose()
     attendeeRejected?: number;
     @Expose()

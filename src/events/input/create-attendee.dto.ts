@@ -1,4 +1,4 @@
-import {AttendeeAnswerEnum} from "../attendee.entity";
+import {AttendeeAnswerEnum} from "../attendee/attendee.entity";
 import {IsEnum} from "class-validator";
 
 export class CreateAttendeeDto{

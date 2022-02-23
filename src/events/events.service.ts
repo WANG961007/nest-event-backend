@@ -2,7 +2,7 @@ import {Repository, SelectQueryBuilder} from "typeorm";
 import {Event, PaginatedEvents} from "./event.entity";
 import {InjectRepository} from "@nestjs/typeorm";
 import {Injectable, Logger} from "@nestjs/common";
-import {AttendeeAnswerEnum} from "./attendee.entity";
+import {AttendeeAnswerEnum} from "./attendee/attendee.entity";
 import {ListEvents, WhenEventFilter} from "./input/list.events";
 import {paginate, PaginateOptions} from "../pagination/paginator";
 import {CreateEventDto} from "./input/create-event.dto";
@@ -62,7 +62,6 @@ export class EventsService {
     private getEventsWithAttendeeCountFilteredQuery(filter?: ListEvents): SelectQueryBuilder<Event> {
         let query = this.getEventsWithAttendeeCountQuery();
         if (!filter) {
-            // return query.getMany();
             return query;
         }
         if (filter.when) {
@@ -83,7 +82,6 @@ export class EventsService {
                 query = query.andWhere('YEARWEEK(e.when, 1) = YEARWEEK(CURDATE(),1) + 1');
             }
         }
-        // return await query.getMany();
         return query;
     }
 
@@ -97,7 +95,12 @@ export class EventsService {
         );
     }
 
-    public async getEventWithAttendeeCount(id: number): Promise<Event | undefined> { // 后面是返回的类型
+    /**
+     * for controller findOne function
+     * without filter and paginated just for controller findOne
+     * @param id
+     */
+    public async getEventWithAttendeeCount(id: number): Promise<Event | undefined> {
 
         const query = this.getEventsWithAttendeeCountQuery()
             .andWhere('e.id = :id', {id});
@@ -107,9 +110,14 @@ export class EventsService {
         return await query.getOne();
     }
 
+    /**
+     * for update function
+     * @param id
+     */
     public async findOne(id: number): Promise<Event | undefined> {
         return await this.eventsRepository.findOne(id);
     }
+
     public async createEvent(input: CreateEventDto, user: User): Promise<Event> {
         return await this.eventsRepository.save(
             new Event({
@@ -137,6 +145,11 @@ export class EventsService {
             .execute();
     }
 
+    /**
+     * for events-organized-by-user
+     * @param userId
+     * @param paginateOptions
+     */
     public async getEventsOrganizedByUserIdPaginated(
         userId: number, paginateOptions: PaginateOptions
     ): Promise<PaginatedEvents>{// which is created in the 63 lecture
@@ -152,6 +165,12 @@ export class EventsService {
     }
     // the responsibility is to generate a query that will fetch all the events organized by a user with a specific ID
 
+    /**
+     * for current-user-event-attendance.controller
+     * without filter function
+     * @param userId
+     * @param paginateOptions
+     */
     public async getEventsAttendedByUserIdPaginated(
         userId: number, paginateOptions: PaginateOptions
     ): Promise<PaginatedEvents>{// which is created in the 63 lecture

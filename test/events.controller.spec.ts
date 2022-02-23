@@ -1,9 +1,9 @@
 // test grouping
-import {EventsController} from "./events.controller";
-import {EventsService} from "./events.service";
+import {EventsController} from "../src/events/events.controller";
+import {EventsService} from "../src/events/events.service";
 import {Repository} from "typeorm";
-import {Event} from "./event.entity";
-import {ListEvents} from "./input/list.events";
+import {Event} from "../src/events/event.entity";
+import {ListEvents} from "../src/events/input/list.events";
 
 describe('EventsController', () => {
     let eventsController: EventsController;

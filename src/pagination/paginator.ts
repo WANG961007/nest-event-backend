@@ -36,13 +36,6 @@ export async function paginate<T>(
     const data = await qb.limit(options.limit)
         .offset(offset).getMany();
 
-    // return {
-    //     first: offset + 1,
-    //     last: offset + data.length,
-    //     limit: options.limit,
-    //     total: options.total ? await qb.getCount() : null,
-    //     data
-    //     }
     return new PaginationResult<T>({
         first: offset + 1,
         last: offset + data.length,

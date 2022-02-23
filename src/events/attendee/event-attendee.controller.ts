@@ -7,6 +7,8 @@ import {
     UseInterceptors
 } from "@nestjs/common";
 import {AttendeesService} from "./attendees.service";
+import {ApiOperation} from "@nestjs/swagger";
+
 
 @Controller('events/:eventId/attendees')
 @SerializeOptions({strategy: 'excludeAll'})
@@ -16,10 +18,13 @@ export class EventAttendeeController {
     ) {
     }
 
+    // @ts-ignore
+    @ApiOperation("get all attendees who attend specified event")
     @Get()
     @UseInterceptors(ClassSerializerInterceptor)
-    async findAll(@Param("eventId", ParseIntPipe) eventId: number) {
-        return await this.attendeesService.findByEventID(eventId);
-
+    async findAll(
+        @Param("eventId", ParseIntPipe) eventId: number
+    ) {
+        return await this.attendeesService.findByEventId(eventId);
     }
 }

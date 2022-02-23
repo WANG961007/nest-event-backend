@@ -9,12 +9,17 @@ import {
     UseGuards,
     UseInterceptors
 } from "@nestjs/common";
-import {EventsService} from "./events.service";
+import {EventsService} from "../events.service";
 import {AttendeesService} from "./attendees.service";
-import {CreateAttendeeDto} from "./input/create-attendee.dto";
-import {CurrentUser} from "../auth/current-user";
-import {User} from "../auth/user.entity";
-import {AuthGuardJwt} from "../auth/auth-guard.jwt";
+import {CreateAttendeeDto} from "../input/create-attendee.dto";
+import {CurrentUser} from "../../auth/current-user";
+import {User} from "../../auth/user.entity";
+import {AuthGuardJwt} from "../../auth/auth-guard.jwt";
+import {ApiOperation} from "@nestjs/swagger";
+
+/**
+ * ParseIntPipe : verify the eventId is number
+ */
 
 @Controller('events-attendance')
 @SerializeOptions({strategy: 'excludeAll'})
@@ -25,20 +30,23 @@ export class CurrentUserEventAttendanceController {
     ) {
     }
 
+    // @ts-ignore
+    @ApiOperation("get All Event with attendees")
     @Get()
     @UseGuards(AuthGuardJwt)
     @UseInterceptors(ClassSerializerInterceptor)
     async findAll(
         @CurrentUser() user: User,
-        @Query('page',new DefaultValuePipe(1),ParseIntPipe) page = 1
+        @Query('page', new DefaultValuePipe(1), ParseIntPipe) page = 1
     ) {
-        return await this.eventsService
-            .getEventsAttendedByUserIdPaginated(
-                user.id, {limit: 6, currentPage: page}
-            )
-
+        return await this.eventsService.
+        getEventsAttendedByUserIdPaginated(
+            user.id,{limit:6, currentPage: page}
+        )
     }
 
+    // @ts-ignore
+    @ApiOperation("get attendee by eventId")
     @Get(":eventId")
     @UseGuards(AuthGuardJwt)
     @UseInterceptors(ClassSerializerInterceptor)
@@ -47,25 +55,23 @@ export class CurrentUserEventAttendanceController {
         @CurrentUser() user: User
     ) {
         const attendee = await this.attendeesService
-            .findOneByEventIdAndUserId(eventId, user.id);
-
+            .findOneAttendeeByEventIdAndUserId(eventId, user.id);
         if (!attendee) {
             throw new NotFoundException();
         }
-
         return attendee;
     }
 
+    // @ts-ignore
+    @ApiOperation("Create attendee for specified event")
     @Put("/:eventId")
     @UseGuards(AuthGuardJwt)
     @UseInterceptors(ClassSerializerInterceptor)
     async createOrUpdate(
-        @Param('eventId', ParseIntPipe) eventId: number,
-        @Body() input: CreateAttendeeDto,
-        @CurrentUser() user: User
+        @Param("eventId", ParseIntPipe) eventId: number,
+        @CurrentUser() user: User,
+        @Body() input: CreateAttendeeDto
     ) {
-
-        return this.attendeesService.createOrUpdate(input, eventId, user.id)
+        return this.attendeesService.createOrUpdate(input, eventId, user.id);
     }
-    //ParseIntPipe purpose is to verify the eventId is number
 }

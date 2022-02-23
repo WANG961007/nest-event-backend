@@ -17,6 +17,11 @@ export class EventsOrganizedByUserController {
     ) {
     }
 
+    /**
+     *
+     * @param userId
+     * @param page
+     */
     @Get()
     @UseInterceptors(ClassSerializerInterceptor)
     async findAll(
