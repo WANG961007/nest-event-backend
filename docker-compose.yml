@@ -1,6 +1,19 @@
 version: "3.8"
 
 services:
+  notes:
+    build:
+      context: .
+    working_dir: /app
+    ports:
+      - 3000:3000
+    environment:
+      - SERVER_PORT=3000
+      - CONNECTIONSTRING=mysqldb://mysql:3306/nest-events
+    volumes:
+      - ./:/usr/src/app
+      - /usr/src/app/node_modules
+
   mysql:
     image: mysql:8.0.23
     command: --default-authentication-plugin=mysql_native_password
@@ -10,16 +23,11 @@ services:
     ports:
       - 3306:3306
 
-  postgres:
-    image: postgres:13.1
-    restart: always
-    environment:
-      POSTGRES_PASSWORD: example
-    ports:
-      - 5432:5432
-
   adminer:
     image: adminer
     restart: always
     ports:
       - 8080:8080
+
+
+
