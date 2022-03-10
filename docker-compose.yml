@@ -9,10 +9,10 @@ services:
       - 3000:3000
     environment:
       - SERVER_PORT=3000
-      - CONNECTIONSTRING=mysqldb://mysql:3306/nest-events
     volumes:
-      - ./:/usr/src/app
-      - /usr/src/app/node_modules
+      - ./:/app
+      - /app/node_modules
+
 
   mysql:
     image: mysql:8.0.23
@@ -20,6 +20,7 @@ services:
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: example
+      MYSQL_DATABASE: nest-events
     ports:
       - 3306:3306
 
