@@ -12,7 +12,8 @@ services:
     volumes:
       - ./:/app
       - /app/node_modules
-
+    networks:
+      - notes-mysql
 
   mysql:
     image: mysql:8.0.23
@@ -21,14 +22,22 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: example
       MYSQL_DATABASE: nest-events
-    ports:
-      - 3306:3306
+    volumes:
+      - todo-mysql-data:/var/lib/mysql
+    networks:
+      - notes-mysql
 
   adminer:
     image: adminer
     restart: always
     ports:
       - 8080:8080
+
+networks:
+  notes-mysql:
+volumes:
+  todo-mysql-data:
+
 
 
 
