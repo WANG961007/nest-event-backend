@@ -29,6 +29,6 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: users/app:latest
+          tags: xuejingwang1007/app:latest
 
 
