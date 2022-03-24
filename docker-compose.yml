@@ -26,15 +26,19 @@ services:
       - todo-mysql-data:/var/lib/mysql
     networks:
       - notes-mysql
+      - mysql-adminer
 
   adminer:
     image: adminer
     restart: always
     ports:
       - 8080:8080
+    networks:
+      - mysql-adminer
 
 networks:
   notes-mysql:
+  mysql-adminer:
 volumes:
   todo-mysql-data:
 
