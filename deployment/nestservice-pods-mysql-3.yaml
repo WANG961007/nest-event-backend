@@ -16,7 +16,6 @@ spec:
         - name: "MYSQL_DATABASE"
           value: "nest-events"
         - name: "MYSQL_ROOT_PASSWORD"
-          value: "example"
-      command
+          value: "example":
       ports:
       - containerPort: 3306
