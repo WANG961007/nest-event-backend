@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nest-deployment
+  labels:
+    app: demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: demo
+  template:
+    metadata:
+      name: nestservice-4
+      labels:
+        app: demo
+    spec:
+      containers:
+        - name: nest-events-backend-notes-1
+          image: xuejingwang1007/nestservice3.0
+          env:
+            - name: "DB_HOST"
+              value: "back-end"
+            - name: "DB_PORT"
+              value: "3306"
+            - name: "MYSQL_USER"
+              value: "nestservice"
+            - name: "MYSQL_PASSWORD"
+              value: "example"
+          ports:
+            - containerPort: 3000
